@@ -11,6 +11,7 @@ public class UsuarioMapper {
 	public static Usuario toEntity(UsuarioDTO dto, Perfil perfil, Endereco endereco) {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
+        usuario.setLogin(dto.getLogin());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
         usuario.setDataUltimaAlteracao(dto.getDataUltimaAlteracao());
@@ -22,6 +23,7 @@ public class UsuarioMapper {
 	public static Usuario toEntity(InserirUsuarioDTO dto, Perfil perfil, Endereco endereco) {
         Usuario usuario = new Usuario();
         usuario.setNome(dto.getNome());
+        usuario.setLogin(dto.getLogin());
         usuario.setEmail(dto.getEmail());
         usuario.setSenha(dto.getSenha());
         usuario.setDataUltimaAlteracao(dto.getDataUltimaAlteracao());
@@ -34,6 +36,7 @@ public class UsuarioMapper {
         UsuarioDTO dto = new UsuarioDTO();
         dto.setNome(usuario.getNome());
         dto.setEmail(usuario.getEmail());
+        dto.setLogin(usuario.getLogin());
         dto.setSenha(null);
         dto.setDataUltimaAlteracao(usuario.getDataUltimaAlteracao());
         dto.setEndereco(EnderecoMapper.toDTO(usuario.getEndereco()));

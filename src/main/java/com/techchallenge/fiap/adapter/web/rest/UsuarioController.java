@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.techchallenge.fiap.application.service.UsuarioService;
 import com.techchallenge.fiap.dto.InserirUsuarioDTO;
 import com.techchallenge.fiap.dto.TrocaSenhaDTO;
+import com.techchallenge.fiap.dto.AlterarUsuarioDTO;
 import com.techchallenge.fiap.dto.UsuarioDTO;
 
 import jakarta.validation.Valid;
@@ -41,7 +42,7 @@ public class UsuarioController {
 
     @GetMapping("/{email}")
     public ResponseEntity<UsuarioDTO> buscarPorEmail(@PathVariable String email) {
-        UsuarioDTO dto = usuarioService.buscarPorEmail(email);
+        UsuarioDTO dto = usuarioService.buscarUsuarioDTOPorEmail(email);
         return ResponseEntity.ok(dto);
     }
     
@@ -50,7 +51,7 @@ public class UsuarioController {
             @PathVariable String email,
             @RequestParam String cep,
             @RequestParam String numero,
-            @Valid @RequestBody UsuarioDTO usuarioDTO
+            @Valid @RequestBody AlterarUsuarioDTO usuarioDTO
     ) {
         UsuarioDTO atualizado = usuarioService.atualizarUsuario(cep, numero, usuarioDTO);
         return ResponseEntity.ok(atualizado);

@@ -10,6 +10,7 @@ import com.techchallenge.fiap.domain.model.Usuario;
 import com.techchallenge.fiap.domain.repository.UsuarioRepository;
 import com.techchallenge.fiap.dto.InserirUsuarioDTO;
 import com.techchallenge.fiap.dto.TrocaSenhaDTO;
+import com.techchallenge.fiap.dto.AlterarUsuarioDTO;
 import com.techchallenge.fiap.dto.UsuarioDTO;
 import com.techchallenge.fiap.exception.CredenciaisInvalidasException;
 import com.techchallenge.fiap.exception.RecursoNaoEncontradoException;
@@ -35,7 +36,7 @@ public class UsuarioService {
 
     @Transactional
     public UsuarioDTO cadastrarUsuario(String cep, String numero, InserirUsuarioDTO dto) {
-    	validarUsuarioExixtenteCriacao(dto.getEmail());
+    	validarUsuarioExixtenteCriacao(dto.getEmail(), dto.getLogin());
     	
         Perfil perfil = perfilService.buscarPorId(dto.getIdPerfil());
 
@@ -50,7 +51,7 @@ public class UsuarioService {
     }
     
     @Transactional
-    public UsuarioDTO atualizarUsuario(String cep, String numero, UsuarioDTO dto) {
+    public UsuarioDTO atualizarUsuario(String cep, String numero, AlterarUsuarioDTO dto) {
         Usuario usuario = usuarioRepository.findByEmail(dto.getEmail())
             .orElseThrow(() -> 
             	new RecursoNaoEncontradoException("Não foi possível encontrar o usuário com o e-mail: " + dto.getEmail()));
@@ -95,22 +96,32 @@ public class UsuarioService {
         usuarioRepository.delete(usuario);
     }
     
-    public UsuarioDTO buscarPorEmail(String email) {
+    public UsuarioDTO buscarUsuarioDTOPorEmail(String email) {
         Usuario usuario = usuarioRepository.findByEmail(email)
-            .orElseThrow(() -> new RecursoNaoEncontradoException("Não foi possível encontrar o usuário com o e-mail: " + email));
+        		.orElseThrow(() -> 
+        			new RecursoNaoEncontradoException("Nenhum usuário foi encontrado com o email: " + email));
         return UsuarioMapper.toDTO(usuario);
     }
     
     private Usuario buscarUsuarioPorEmail(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-            .orElseThrow(() -> new RecursoNaoEncontradoException("Não foi possível encontrar o usuário com o e-mail: " + email));
+        Usuario usuario = usuarioRepository.findByEmail(email).get();
+        return usuario;
+    }
+    
+    private Usuario buscarUsuarioPorLogin(String login) {
+        Usuario usuario = usuarioRepository.findByLogin(login).get();
         return usuario;
     }
 
-    private void validarUsuarioExixtenteCriacao(String email) {
-    	UsuarioDTO usuarioDto = buscarPorEmail(email);
-    	if(usuarioDto != null)
-    		throw new UsuarioExistenteException("Já existe um usuário com o email: " + email); 		
+    private void validarUsuarioExixtenteCriacao(String email, String login) {
+    	Usuario usuario = buscarUsuarioPorEmail(email);
+    	if(usuario != null)
+    		throw new UsuarioExistenteException("Já existe um usuário com o email: " + email);
+    	
+    	usuario = buscarUsuarioPorLogin(login);
+    	
+    	if(usuario != null)
+    		throw new UsuarioExistenteException("Já existe um usuário com o email: " + email);
     }
     
     private void validarUsuarioExistenteAtualizacao(String email, Long idUsuario) {

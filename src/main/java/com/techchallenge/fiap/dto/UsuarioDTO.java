@@ -14,6 +14,10 @@ public class UsuarioDTO {
 	@Size(min = 3, max = 60, message = "O nome deve ter entre 3 e 60 caracteres.")
 	private String nome;
 
+	@NotBlank(message = "O login é obrigatório.")
+	@Size(min = 5, max = 30, message = "O nome deve ter entre 5 e 30 caracteres.")
+	private String login;
+	
 	@NotBlank(message = "O email é obrigatório.")
 	@Size(min = 5, max = 100, message = "O email deve ter entre 5 e 100 caracteres.")
 	@Email(message = "Email inválido.")
@@ -37,6 +41,12 @@ public class UsuarioDTO {
 	}
 	public void setNome(String nome) {
 		this.nome = nome;
+	}
+	public String getLogin() {
+		return login;
+	}
+	public void setLogin(String login) {
+		this.login = login;
 	}
 	public String getEmail() {
 		return email;
