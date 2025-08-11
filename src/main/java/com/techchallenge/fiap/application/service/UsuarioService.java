@@ -121,7 +121,7 @@ public class UsuarioService {
     	usuario = buscarUsuarioPorLogin(login);
     	
     	if(usuario != null)
-    		throw new UsuarioExistenteException("Já existe um usuário com o email: " + email);
+    		throw new UsuarioExistenteException("Já existe um usuário com o login: " + login);
     }
     
     private void validarUsuarioExistenteAtualizacao(String email, Long idUsuario) {
