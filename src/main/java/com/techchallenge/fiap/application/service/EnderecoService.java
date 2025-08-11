@@ -18,7 +18,7 @@ public class EnderecoService {
     }
 
     public Endereco criarEndereco(String cep, String numero) {
-        ViaCepResponse viaCep = viaCepService.buscarEnderecoPorCep(cep);
+        ViaCepResponse viaCep = viaCepService.buscarEnderecoPorCep(cep.replace("-", ""));
 
         Endereco endereco = new Endereco();
         endereco.setCep(cep);
