@@ -41,7 +41,7 @@ public class RestExceptionHandler {
 	public ResponseEntity<ValidationError> validation(MethodArgumentNotValidException e, HttpServletRequest request){
 		
 		HttpStatus status = HttpStatus.UNPROCESSABLE_ENTITY;
-		ValidationError error = new ValidationError(status.value(), e.getMessage());
+		ValidationError error = new ValidationError(status.value(), "Erro na validação");
 		
 		for (FieldError f : e.getBindingResult().getFieldErrors()) {
 			error.addFieldError(f.getField(), f.getDefaultMessage());

@@ -23,113 +23,116 @@ import jakarta.transaction.Transactional;
 public class UsuarioService {
 
 	private final UsuarioRepository usuarioRepository;
-    private final PerfilService perfilService;
-    private final EnderecoService enderecoService;
+	private final PerfilService perfilService;
+	private final EnderecoService enderecoService;
 
-    public UsuarioService(UsuarioRepository usuarioRepository,
-                          PerfilService perfilService,
-                          EnderecoService enderecoService) {
-        this.usuarioRepository = usuarioRepository;
-        this.perfilService = perfilService;
-        this.enderecoService = enderecoService;
-    }
+	public UsuarioService(UsuarioRepository usuarioRepository, PerfilService perfilService,
+			EnderecoService enderecoService) {
+		this.usuarioRepository = usuarioRepository;
+		this.perfilService = perfilService;
+		this.enderecoService = enderecoService;
+	}
 
-    @Transactional
-    public UsuarioDTO cadastrarUsuario(String cep, String numero, InserirUsuarioDTO dto) {
-    	validarUsuarioExixtenteCriacao(dto.getEmail(), dto.getLogin());
-    	
-        Perfil perfil = perfilService.buscarPorId(dto.getIdPerfil());
+	@Transactional
+	public UsuarioDTO cadastrarUsuario(String cep, String numero, InserirUsuarioDTO dto) {
+		validarUsuarioExixtenteCriacao(dto.getEmail(), dto.getLogin());
 
-        Endereco endereco = enderecoService.criarEndereco(cep, numero);
+		Perfil perfil = perfilService.buscarPorId(dto.getIdPerfil());
 
-        Usuario usuario = UsuarioMapper.toEntity(dto, perfil, endereco);
-        usuario.setDataUltimaAlteracao(LocalDateTime.now());
+		Endereco endereco = enderecoService.criarEndereco(cep, numero);
 
-        usuario = usuarioRepository.save(usuario);
+		Usuario usuario = UsuarioMapper.toEntity(dto, perfil, endereco);
 
-        return UsuarioMapper.toDTO(usuario);
-    }
-    
-    @Transactional
-    public UsuarioDTO atualizarUsuario(String cep, String numero, AlterarUsuarioDTO dto) {
-        Usuario usuario = usuarioRepository.findByEmail(dto.getEmail())
-            .orElseThrow(() -> 
-            	new RecursoNaoEncontradoException("Não foi possível encontrar o usuário com o e-mail: " + dto.getEmail()));
+		usuario = usuarioRepository.save(usuario);
 
-        validarUsuarioExistenteAtualizacao(dto.getEmail(), usuario.getIdUsuario());
-        
-        usuario.setNome(dto.getNome());
-        usuario.setEmail(dto.getEmail());
-        usuario.setDataUltimaAlteracao(LocalDateTime.now());
+		return UsuarioMapper.toDTO(usuario);
+	}
 
-        if (dto.getIdPerfil() != null) {
-            Perfil perfil = perfilService.buscarPorId(dto.getIdPerfil());
-            usuario.setPerfil(perfil);
-        }
+	@Transactional
+	public UsuarioDTO atualizarUsuario(String cep, String numero, AlterarUsuarioDTO dto) {
+		Usuario usuario = usuarioRepository.findByEmail(dto.getEmail())
+				.orElseThrow(() -> new RecursoNaoEncontradoException(
+						"Não foi possível encontrar o usuário com o e-mail: " + dto.getEmail()));
 
-        Endereco novoEndereco = enderecoService.criarEndereco(cep, numero);
-        usuario.setEndereco(novoEndereco);
+		validarUsuarioExistenteAtualizacao(dto.getEmail(), usuario.getIdUsuario());
 
-        usuario = usuarioRepository.save(usuario);
+		usuario.setNome(dto.getNome());
+		usuario.setEmail(dto.getEmail());
+		usuario.setDataUltimaAlteracao(LocalDateTime.now());
 
-        return UsuarioMapper.toDTO(usuario);
-    }
-    
-    @Transactional
-    public void trocarSenhaPorEmail(String email, TrocaSenhaDTO dto) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-            .orElseThrow(() -> new RecursoNaoEncontradoException("Não foi possível encontrar o usuário com o e-mail: " + email));
-        if (!usuario.getSenha().equals(dto.getSenhaAtual())) {
-            throw new CredenciaisInvalidasException("Credenciais Inválidas");
-        }
-        usuario.setSenha(dto.getNovaSenha());
-        usuario.setDataUltimaAlteracao(LocalDateTime.now());
-        usuarioRepository.save(usuario);
-    }
+		if (dto.getIdPerfil() != null) {
+			Perfil perfil = perfilService.buscarPorId(dto.getIdPerfil());
+			usuario.setPerfil(perfil);
+		}
 
-    
-    @Transactional
-    public void deletarUsuarioPorEmail(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-            .orElseThrow(() -> 
-            	new RecursoNaoEncontradoException("Não foi possível encontrar o usuário com o e-mail: " + email));
-        usuarioRepository.delete(usuario);
-    }
-    
-    public UsuarioDTO buscarUsuarioDTOPorEmail(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email)
-        		.orElseThrow(() -> 
-        			new RecursoNaoEncontradoException("Nenhum usuário foi encontrado com o email: " + email));
-        return UsuarioMapper.toDTO(usuario);
-    }
-    
-    private Usuario buscarUsuarioPorEmail(String email) {
-        Usuario usuario = usuarioRepository.findByEmail(email).get();
-        return usuario;
-    }
-    
-    private Usuario buscarUsuarioPorLogin(String login) {
-        Usuario usuario = usuarioRepository.findByLogin(login).get();
-        return usuario;
-    }
+		Endereco novoEndereco = enderecoService.criarEndereco(cep, numero);
+		usuario.setEndereco(novoEndereco);
 
-    private void validarUsuarioExixtenteCriacao(String email, String login) {
-    	Usuario usuario = buscarUsuarioPorEmail(email);
-    	if(usuario != null)
-    		throw new UsuarioExistenteException("Já existe um usuário com o email: " + email);
-    	
-    	usuario = buscarUsuarioPorLogin(login);
-    	
-    	if(usuario != null)
-    		throw new UsuarioExistenteException("Já existe um usuário com o login: " + login);
-    }
-    
-    private void validarUsuarioExistenteAtualizacao(String email, Long idUsuario) {
-        Usuario usuario = buscarUsuarioPorEmail(email);
-        
-        if (usuario != null && !usuario.getIdUsuario().equals(idUsuario)) {
-            throw new UsuarioExistenteException("Já existe um usuário com o email: " + email);
-        }
-    }
+		usuario = usuarioRepository.save(usuario);
 
+		return UsuarioMapper.toDTO(usuario);
+	}
+
+	@Transactional
+	public void trocarSenhaPorEmail(String email, TrocaSenhaDTO dto) {
+		Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(
+				() -> new RecursoNaoEncontradoException("Não foi possível encontrar o usuário com o e-mail: " + email));
+		if (!usuario.getSenha().equals(dto.getSenhaAtual())) {
+			throw new CredenciaisInvalidasException("Credenciais Inválidas");
+		}
+		usuario.setSenha(dto.getNovaSenha());
+		usuario.setDataUltimaAlteracao(LocalDateTime.now());
+		usuarioRepository.save(usuario);
+	}
+
+	@Transactional
+	public void deletarUsuarioPorEmail(String email) {
+		Usuario usuario = buscarUsuarioPorEmail(email);
+		usuarioRepository.delete(usuario);
+	}
+
+	public UsuarioDTO buscarUsuarioDTOPorEmail(String email) {
+		Usuario usuario = usuarioRepository.findByEmail(email).orElseThrow(
+				() -> new RecursoNaoEncontradoException("Nenhum usuário foi encontrado com o email: " + email));
+		return UsuarioMapper.toDTO(usuario);
+	}
+
+	private Usuario buscarUsuarioPorEmail(String email) {
+		Usuario usuario = usuarioRepository.findByEmail(email).get();
+		return usuario;
+	}
+
+	private boolean buscarSeEmailExiste(String email) {
+		boolean estaPresente = usuarioRepository.findByEmail(email).isPresent();
+		return estaPresente;
+	}
+
+	private boolean buscarSeLoginExiste(String login) {
+		boolean estaPresente = usuarioRepository.findByLogin(login).isPresent();
+		return estaPresente;
+	}
+
+	private void validarUsuarioExixtenteCriacao(String email, String login) {
+		boolean estaPresente = buscarSeEmailExiste(email);
+		if (estaPresente)
+			throw new UsuarioExistenteException("Já existe um usuário com o email: " + email);
+
+		estaPresente = buscarSeLoginExiste(login);
+
+		if (estaPresente)
+			throw new UsuarioExistenteException("Já existe um usuário com o login: " + login);
+	}
+
+	private void validarUsuarioExistenteAtualizacao(String email, Long idUsuario) {
+		boolean estaPresente = buscarSeEmailExiste(email);
+
+		if (estaPresente == true) {
+
+			Usuario usuario = buscarUsuarioPorEmail(email);
+			
+			if (!usuario.getIdUsuario().equals(idUsuario)) {
+				throw new UsuarioExistenteException("Já existe um usuário com o email: " + email);
+			}
+		}
+	}
 }
