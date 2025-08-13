@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "b076e49a-29fb-40f5-a234-f59e092bf850",
+		"name": "Tech Challenge FIAP - Fase 1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17914792"
+	},
+	"item": [
+		{
+			"name": "Criar usuário",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"Felipe\",\r\n  \"login\": \"Felipe\",\r\n  \"email\": \"felipe@email.com\",\r\n  \"senha\": \"12345678\",\r\n  \"cep\": \"24220-004\",\r\n  \"numero\": \"330\",\r\n  \"complemento\": \"Apto. 301\",\r\n  \"idPerfil\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consultar usuário",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios/joao@email.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios",
+						"joao@email.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Atualizar usuário",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"João\",\r\n  \"email\": \"joao@email.com\",\r\n  \"idPerfil\": 1,\r\n  \"cep\": \"24220-004\",\r\n  \"numero\": \"233\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios/felipe@email.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios",
+						"felipe@email.com"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Alterar senha",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"senhaAtual\": \"12345678\",\r\n  \"novaSenha\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios/joao@email.com/senha",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios",
+						"joao@email.com",
+						"senha"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"login\": \"Felipe\",\r\n  \"senha\": \"12345678\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar usuário",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nome\": \"Felipe\",\r\n  \"login\": \"Felipe\",\r\n  \"email\": \"felipe@email.com\",\r\n  \"senha\": \"12345678\",\r\n  \"cep\": \"24220-004\",\r\n  \"numero\": \"330\",\r\n  \"complemento\": \"Apto. 301\",\r\n  \"idPerfil\": 2\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/usuarios/felipe@email.com",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"usuarios",
+						"felipe@email.com"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
