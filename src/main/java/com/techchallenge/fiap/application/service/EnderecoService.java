@@ -17,17 +17,18 @@ public class EnderecoService {
         this.viaCepService = viaCepService;
     }
 
-    public Endereco criarEndereco(String cep, String numero) {
+    public Endereco criarEndereco(String cep, String numero, String complemento) {
         ViaCepResponse viaCep = viaCepService.buscarEnderecoPorCep(cep.replace("-", ""));
 
         Endereco endereco = new Endereco();
         endereco.setCep(cep);
         endereco.setNumero(numero);
+        endereco.setComplemento(complemento);
         endereco.setRua(viaCep.getRua());
         endereco.setBairro(viaCep.getBairro());
         endereco.setCidade(viaCep.getCidade());
         endereco.setEstado(viaCep.getEstado());
-
+        
         return enderecoRepository.save(endereco);
     }
 }

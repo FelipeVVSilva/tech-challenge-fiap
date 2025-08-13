@@ -27,11 +27,13 @@ public class EnderecoDTO {
     @NotBlank(message = "O estado é obrigatório.")
     @Size(min = 2, max = 2, message = "O estado deve ter exatamente 2 caracteres (ex: SP, RJ).")
     private String estado;
-    @NotBlank(message = "O CEP é obrigatório.")
     
     @NotBlank(message = "O CEP é obrigatório.")
     @Pattern(regexp = "\\d{5}-\\d{3}", message = "O CEP deve ter o formato 00000-000.")
     private String cep;
+    
+	@Size(min = 1, max = 50, message = "O complemento deve ter entre 1 e 50 caracteres.")
+	private String complemento;
     
 	public Long getIdEndereco() {
 		return idEndereco;
@@ -74,5 +76,11 @@ public class EnderecoDTO {
 	}
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+	public String getComplemento() {
+		return complemento;
+	}
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
 	}
 }

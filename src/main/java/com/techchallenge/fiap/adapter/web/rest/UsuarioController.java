@@ -9,13 +9,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.techchallenge.fiap.application.service.UsuarioService;
+import com.techchallenge.fiap.dto.AlterarUsuarioDTO;
 import com.techchallenge.fiap.dto.InserirUsuarioDTO;
 import com.techchallenge.fiap.dto.TrocaSenhaDTO;
-import com.techchallenge.fiap.dto.AlterarUsuarioDTO;
 import com.techchallenge.fiap.dto.UsuarioDTO;
 
 import jakarta.validation.Valid;
@@ -32,11 +31,9 @@ public class UsuarioController {
 
     @PostMapping
     public ResponseEntity<UsuarioDTO> cadastrar(
-            @RequestParam String cep,
-            @RequestParam String numero,
             @Valid @RequestBody InserirUsuarioDTO inserirUsuarioDTO
     ) {
-        UsuarioDTO criado = usuarioService.cadastrarUsuario(cep, numero, inserirUsuarioDTO);
+        UsuarioDTO criado = usuarioService.cadastrarUsuario(inserirUsuarioDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
@@ -49,11 +46,9 @@ public class UsuarioController {
     @PutMapping("/{email}")
     public ResponseEntity<UsuarioDTO> atualizarUsuario(
             @PathVariable String email,
-            @RequestParam String cep,
-            @RequestParam String numero,
-            @Valid @RequestBody AlterarUsuarioDTO usuarioDTO
+            @Valid @RequestBody AlterarUsuarioDTO alterarUsuarioDTO
     ) {
-        UsuarioDTO atualizado = usuarioService.atualizarUsuario(cep, numero, usuarioDTO);
+        UsuarioDTO atualizado = usuarioService.atualizarUsuario(alterarUsuarioDTO, email);
         return ResponseEntity.ok(atualizado);
     }
     

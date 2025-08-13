@@ -34,6 +34,9 @@ public class Endereco {
 	
 	@Column(nullable = false)
     private String cep;
+	
+	@Column(nullable = true)
+	private String complemento;
     
 	public Endereco() {
 		super();
@@ -80,6 +83,12 @@ public class Endereco {
 	}
 	public void setCep(String cep) {
 		this.cep = cep;
+	}
+	public String getComplemento() {
+		return complemento;
+	}
+	public void setComplemento(String complemento) {
+		this.complemento = complemento;
 	}
 
 	@Override

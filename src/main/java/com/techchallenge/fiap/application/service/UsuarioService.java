@@ -1,6 +1,7 @@
 package com.techchallenge.fiap.application.service;
 
 import java.time.LocalDateTime;
+import java.util.NoSuchElementException;
 
 import org.springframework.stereotype.Service;
 
@@ -34,12 +35,12 @@ public class UsuarioService {
 	}
 
 	@Transactional
-	public UsuarioDTO cadastrarUsuario(String cep, String numero, InserirUsuarioDTO dto) {
+	public UsuarioDTO cadastrarUsuario(InserirUsuarioDTO dto) {
 		validarUsuarioExixtenteCriacao(dto.getEmail(), dto.getLogin());
 
 		Perfil perfil = perfilService.buscarPorId(dto.getIdPerfil());
 
-		Endereco endereco = enderecoService.criarEndereco(cep, numero);
+		Endereco endereco = enderecoService.criarEndereco(dto.getCep(), dto.getNumero(), dto.getComplemento());
 
 		Usuario usuario = UsuarioMapper.toEntity(dto, perfil, endereco);
 
@@ -49,8 +50,8 @@ public class UsuarioService {
 	}
 
 	@Transactional
-	public UsuarioDTO atualizarUsuario(String cep, String numero, AlterarUsuarioDTO dto) {
-		Usuario usuario = usuarioRepository.findByEmail(dto.getEmail())
+	public UsuarioDTO atualizarUsuario(AlterarUsuarioDTO dto, String email) {
+		Usuario usuario = usuarioRepository.findByEmail(email)
 				.orElseThrow(() -> new RecursoNaoEncontradoException(
 						"Não foi possível encontrar o usuário com o e-mail: " + dto.getEmail()));
 
@@ -65,7 +66,7 @@ public class UsuarioService {
 			usuario.setPerfil(perfil);
 		}
 
-		Endereco novoEndereco = enderecoService.criarEndereco(cep, numero);
+		Endereco novoEndereco = enderecoService.criarEndereco(dto.getCep(), dto.getNumero(), dto.getComplemento());
 		usuario.setEndereco(novoEndereco);
 
 		usuario = usuarioRepository.save(usuario);
@@ -87,8 +88,15 @@ public class UsuarioService {
 
 	@Transactional
 	public void deletarUsuarioPorEmail(String email) {
-		Usuario usuario = buscarUsuarioPorEmail(email);
-		usuarioRepository.delete(usuario);
+		
+		boolean emailExiste = buscarSeEmailExiste(email);
+		
+		if(emailExiste) {
+			Usuario usuario = buscarUsuarioPorEmail(email);
+			usuarioRepository.delete(usuario);
+		} else {
+			throw new RecursoNaoEncontradoException("Nenhum usuário foi encontrado com o email: " + email);
+		}		
 	}
 
 	public UsuarioDTO buscarUsuarioDTOPorEmail(String email) {

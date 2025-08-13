@@ -14,6 +14,7 @@ public class EnderecoMapper {
         endereco.setCidade(dto.getCidade());
         endereco.setEstado(dto.getEstado());
         endereco.setCep(dto.getCep());
+        endereco.setComplemento(dto.getComplemento());
         return endereco;
     }
 
@@ -26,6 +27,7 @@ public class EnderecoMapper {
         dto.setCidade(endereco.getCidade());
         dto.setEstado(endereco.getEstado());
         dto.setCep(endereco.getCep());
+        dto.setComplemento(endereco.getComplemento());
         return dto;
     }
     
